@@ -3,13 +3,9 @@ from pygame.locals import *
 import RPi.GPIO as GPIO
 GPIO.setmode(GPIO.BCM)
 
-GPIO.setup(5, GPIO.OUT, pull_up_down=GPIO.PUD_DOWN)
-GPIO.setup(6, GPIO.OUT, pull_up_down=GPIO.PUD_DOWN)
-GPIO.setup(13, GPIO.OUT, pull_up_down=GPIO.PUD_DOWN)
-
-GPIO.add_event_detect(5, GPIO.RISING)
-GPIO.add_event_detect(6, GPIO.RISING)
-GPIO.add_event_detect(13, GPIO.RISING)
+GPIO.setup(5, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+GPIO.setup(6, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+GPIO.setup(13, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 
 pygame.init()
 pygame.font.init()
@@ -54,20 +50,24 @@ textInFont = ""
 
 off = False
 
+redE = pygame.event.Event(GPIO.add_event_detect(5, GPIO.RISING))
+yelE = pygame.event.Event(GPIO.add_event_detect(5, GPIO.RISING))
+bluE = pygame.event.Event(GPIO.add_event_detect(5, GPIO.RISING))
+
 while not off:
     pygame.draw.circle(screen, circleColor, (int(width/2), int(height/2+40)), circleRadius)
     text(textInFont, colorOfText)
     for event in pygame.event.get():
         keys = pygame.key.get_pressed()
-        if keys[pygame.K_a] or GPIO.event_detected(5):
+        if keys[pygame.K_a] or redE:
             circleColor = red
             colorOfText = red
             textInFont = "Red"
-        if keys[pygame.K_w] or GPIO.event_detected(6):
+        if keys[pygame.K_w] or yelE:
             circleColor = yellow
             colorOfText = yellow
             textInFont = "Yellow"
-        if keys[pygame.K_d] or GPIO.event_detected(13):
+        if keys[pygame.K_d] or bluE:
             circleColor = blue
             colorOfText = blue
             textInFont = "Blue"
