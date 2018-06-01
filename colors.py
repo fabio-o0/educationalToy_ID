@@ -1,6 +1,15 @@
 import pygame, sys
 from pygame.locals import *
-from gpiozero import Button
+import RPi.GPIO as GPIO
+GPIO.setmode(GPIO.BCM)
+
+GPIO.setup(5, GPIO.OUT, pull_up_down=GPIO.PUD_DOWN)
+GPIO.setup(6, GPIO.OUT, pull_up_down=GPIO.PUD_DOWN)
+GPIO.setup(13, GPIO.OUT, pull_up_down=GPIO.PUD_DOWN)
+
+GPIO.add_event_detect(5, GPIO.RISING)
+GPIO.add_event_detect(6, GPIO.RISING)
+GPIO.add_event_detect(13, GPIO.RISING)
 
 pygame.init()
 pygame.font.init()
@@ -43,50 +52,47 @@ def text(text, color):
 colorOfText = white
 textInFont = ""
 
-yellowButton = Button(5)
-redButton = Button(6)
-greenButton = Button(13)
-
 off = False
 
 while not off:
     pygame.draw.circle(screen, circleColor, (int(width/2), int(height/2+40)), circleRadius)
     text(textInFont, colorOfText)
     for event in pygame.event.get():
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_a] or GPIO.event_detected(5):
+            circleColor = red
+            colorOfText = red
+            textInFont = "Red"
+        if keys[pygame.K_w] or GPIO.event_detected(6):
+            circleColor = yellow
+            colorOfText = yellow
+            textInFont = "Yellow"
+        if keys[pygame.K_d] or GPIO.event_detected(13):
+            circleColor = blue
+            colorOfText = blue
+            textInFont = "Blue"
+        if keys[pygame.K_a] and keys[pygame.K_w]:
+            circleColor = orange
+            colorOfText = orange
+            textInFont = "Orange"
+        if keys[pygame.K_d] and keys[pygame.K_w]:
+            circleColor = green
+            colorOfText = green
+            textInFont = "Green"
+        if keys[pygame.K_d] and keys[pygame.K_a]:
+            circleColor = purple
+            colorOfText = purple
+            textInFont = "Purple"
+        if keys[pygame.K_d] and keys[pygame.K_a] and keys[pygame.K_w]:
+            circleColor = gray
+            colorOfText = gray
+            textInFont = "Black"
+        if keys == keysToCheck:
+            circleColor = bluish
+            colorOfText = white
+            textInFont = ""
         if event.type == QUIT:
             off = True
-    if redButton.is_pressed:
-        circleColor = red
-        colorOfText = red
-        textInFont = "Red"
-    if yellowButton.is_pressed:
-        circleColor = yellow
-        colorOfText = yellow
-        textInFont = "Yellow"
-    if greenButton.is_pressed:
-        circleColor = blue
-        colorOfText = blue
-        textInFont = "Blue"
-    if redButton.is_pressed: and yellowButton.is_pressed:
-        circleColor = orange
-        colorOfText = orange
-        textInFont = "Orange"
-    if yellowButton.is_pressed: and greenButton.is_pressed:
-        circleColor = green
-        colorOfText = green
-        textInFont = "Green"
-    if redButton.is_pressed: and greenButton.is_pressed:
-        circleColor = purple
-        colorOfText = purple
-        textInFont = "Purple"
-    if redButton.is_pressed: and yellowButton.is_pressed: and greenButton.is_pressed:
-        circleColor = gray
-        colorOfText = gray
-        textInFont = "Black"
-    else:
-        circleColor = bluish
-        colorOfText = white
-        textInFont = ""
     pygame.display.update()
     screen.fill(white)
 
