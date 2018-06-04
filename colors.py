@@ -2,7 +2,7 @@ import pygame, sys
 from pygame.locals import *
 import RPi.GPIO as GPIO
 
-GPIO.setmode(GPIO.BOARD)
+GPIO.setmode(GPIO.BCM)
 
 redButton = 5
 yellowButton = 6
@@ -56,45 +56,46 @@ textInFont = ""
 off = False
 
 while not off:
-    pygame.draw.circle(screen, circleColor, (int(width/2), int(height/2+40)), circleRadius)
-    text(textInFont, colorOfText)
-    for event in pygame.event.get():
-        keys = pygame.key.get_pressed()
-        if GPIO.input(redButton) == False:
+    if GPIO.input(redButton) == False:
             print("red")
             circleColor = red
             colorOfText = red
             textInFont = "Red"
-        if GPIO.input(yellowButton) == False:
+    if GPIO.input(yellowButton) == False:
             print("yellow")
             circleColor = yellow
             colorOfText = yellow
             textInFont = "Yellow"
-        if GPIO.input(blueButton) == False:
+    if GPIO.input(blueButton) == False:
             print("blue")
             circleColor = blue
             colorOfText = blue
             textInFont = "Blue"
-        if keys[pygame.K_a] and keys[pygame.K_w]:
+    if GPIO.input(redButton) == False and GPIO.input(yellowButton) == False:
             circleColor = orange
             colorOfText = orange
             textInFont = "Orange"
-        if keys[pygame.K_d] and keys[pygame.K_w]:
+    if GPIO.input(yellowButton) == False and GPIO.input(blueButton) == False:
             circleColor = green
             colorOfText = green
             textInFont = "Green"
-        if keys[pygame.K_d] and keys[pygame.K_a]:
+    if GPIO.input(blueButton) == False and GPIO.input(redButton) == False:
             circleColor = purple
             colorOfText = purple
             textInFont = "Purple"
-        if keys[pygame.K_d] and keys[pygame.K_a] and keys[pygame.K_w]:
+    if GPIO.input(redButton) == False and GPIO.input(yellowButton) == False and GPIO.input(blueButton) == False:
             circleColor = gray
             colorOfText = gray
             textInFont = "Black"
-        if keys == keysToCheck:
+    else:
             circleColor = bluish
             colorOfText = white
             textInFont = ""
+    pygame.display.update()
+    pygame.draw.circle(screen, circleColor, (int(width/2), int(height/2+40)), circleRadius)
+    text(textInFont, colorOfText)
+    for event in pygame.event.get():
+        keys = pygame.key.get_pressed()
         if event.type == QUIT or keys[pygame.K_ESCAPE] or keys[pygame.K_BACKSPACE]:
             off = True
     pygame.display.update()
