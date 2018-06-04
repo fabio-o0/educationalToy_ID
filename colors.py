@@ -61,32 +61,40 @@ while not off:
             circleColor = red
             colorOfText = red
             textInFont = "Red"
+            if GPIO.input(yellowButton) == False:
+                circleColor = orange
+                colorOfText = orange
+                textInFont = "Orange"
+                if GPIO.input(blueButton) == False:
+                    circleColor = gray
+                    colorOfText = gray
+                    textInFont = "Black"
+            elif GPIO.input(blueButton) == False:
+                circleColor = purple
+                colorOfText = purple
+                textInFont = "Purple"
+                if GPIO.input(yellowButton) == False:
+                    circleColor = gray
+                    colorOfText = gray
+                    textInFont = "Black"
     if GPIO.input(yellowButton) == False:
             print("yellow")
             circleColor = yellow
             colorOfText = yellow
             textInFont = "Yellow"
+            if GPIO.input(blueButton) == False:
+                circleColor = green
+                colorOfText = green
+                textInFont = "Green"
+                if GPIO.input(redButton) == False:
+                    circleColor = gray
+                    colorOfText = gray
+                    textInFont = "Black"
     if GPIO.input(blueButton) == False:
             print("blue")
             circleColor = blue
             colorOfText = blue
             textInFont = "Blue"
-    if GPIO.input(redButton) == False and GPIO.input(yellowButton) == False:
-            circleColor = orange
-            colorOfText = orange
-            textInFont = "Orange"
-    if GPIO.input(yellowButton) == False and GPIO.input(blueButton) == False:
-            circleColor = green
-            colorOfText = green
-            textInFont = "Green"
-    if GPIO.input(blueButton) == False and GPIO.input(redButton) == False:
-            circleColor = purple
-            colorOfText = purple
-            textInFont = "Purple"
-    if GPIO.input(redButton) == False and GPIO.input(yellowButton) == False and GPIO.input(blueButton) == False:
-            circleColor = gray
-            colorOfText = gray
-            textInFont = "Black"
     else:
             circleColor = bluish
             colorOfText = white
