@@ -1,11 +1,16 @@
 import pygame, sys
 from pygame.locals import *
 import RPi.GPIO as GPIO
-GPIO.setmode(GPIO.BCM)
 
-GPIO.setup(5, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-GPIO.setup(6, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-GPIO.setup(13, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+GPIO.setmode(GPIO.BOARD)
+
+redButton = 5
+yellowButton = 6
+blueButton = 13
+
+GPIO.setup(redButton, GPIO.IN, pull_up_down = GPIO.PUD_UP)
+GPIO.setup(yellowButton, GPIO.IN, pull_up_down = GPIO.PUD_UP)
+GPIO.setup(blueButton, GPIO.IN, pull_up_down = GPIO.PUD_UP)
 
 pygame.init()
 pygame.font.init()
@@ -24,8 +29,8 @@ purple =(128,0,128)
 gray = (30,30,30)
 bluish = (175, 191, 198)
 
-screen = pygame.display.set_mode((0,0), pygame.FULLSCREEN)
-pygame.mouse.set_visible(0)
+screen = pygame.display.set_mode(size)
+#pygame.mouse.set_visible(0)
 pygame.display.set_caption("Colors")
 
 circleColor = bluish
@@ -39,7 +44,7 @@ keysToCheck = (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
       0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
 
 def text(text, color):
-    sys_font = pygame.font.SysFont ("Trebuchet MS", 80)
+    sys_font = pygame.font.SysFont("Trebuchet MS", 80)
     rendered = sys_font.render(text, 0, color)
     textRect = rendered.get_rect(center=(width/2, 65))
     screen.blit(rendered, textRect)
@@ -50,24 +55,23 @@ textInFont = ""
 
 off = False
 
-redE = pygame.event.Event(GPIO.add_event_detect(5, GPIO.RISING))
-yelE = pygame.event.Event(GPIO.add_event_detect(5, GPIO.RISING))
-bluE = pygame.event.Event(GPIO.add_event_detect(5, GPIO.RISING))
-
 while not off:
     pygame.draw.circle(screen, circleColor, (int(width/2), int(height/2+40)), circleRadius)
     text(textInFont, colorOfText)
     for event in pygame.event.get():
         keys = pygame.key.get_pressed()
-        if keys[pygame.K_a] or redE:
+        if GPIO.input(redButton) == False:
+            print("red")
             circleColor = red
             colorOfText = red
             textInFont = "Red"
-        if keys[pygame.K_w] or yelE:
+        if GPIO.input(yellowButton) == False:
+            print("yellow")
             circleColor = yellow
             colorOfText = yellow
             textInFont = "Yellow"
-        if keys[pygame.K_d] or bluE:
+        if GPIO.input(blueButton) == False:
+            print("blue")
             circleColor = blue
             colorOfText = blue
             textInFont = "Blue"
@@ -91,7 +95,7 @@ while not off:
             circleColor = bluish
             colorOfText = white
             textInFont = ""
-        if event.type == QUIT:
+        if event.type == QUIT or keys[pygame.K_ESCAPE] or keys[pygame.K_BACKSPACE]:
             off = True
     pygame.display.update()
     screen.fill(white)
